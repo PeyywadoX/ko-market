@@ -353,7 +353,7 @@ def get_market_summary():
     return dict(res) if res else {}
 
 def seed_sample_data(force=False):
-    """Veritabanı boşsa örnek pazar verileriyle doldurur."""
+    """Veritabanı boşsa veya zorlanmışsa gerçekçi USKO örnek pazar verileriyle doldurur."""
     conn = get_connection()
     c = conn.cursor()
     count = c.execute("SELECT COUNT(*) FROM market_items").fetchone()[0]
@@ -361,38 +361,57 @@ def seed_sample_data(force=False):
         conn.close()
         return False
         
+    if force:
+        c.execute("DELETE FROM market_items")
+        conn.commit()
+        
     sample_records = [
         # SELL Pazarları
-        ("ProTrader", "Shard +8 & Chitinler", "SELL", 0, 120410, "Shard (+8)", 1, 145000000, 100, "Zero 1", "Moradon", 812, 638),
-        ("ProTrader", "Shard +8 & Chitinler", "SELL", 1, 120410, "Shard (+7)", 1, 18500000, 100, "Zero 1", "Moradon", 812, 638),
-        ("ProTrader", "Shard +8 & Chitinler", "SELL", 2, 210040, "Rogue Chitin Armor Pauldron (+8)", 1, 85000000, 100, "Zero 1", "Moradon", 812, 638),
-        ("ProTrader", "Shard +8 & Chitinler", "SELL", 3, 210050, "Rogue Chitin Armor Pants (+8)", 1, 55000000, 100, "Zero 1", "Moradon", 812, 638),
-        ("MageKing", "Linen +8 Set ve Stafflar", "SELL", 0, 140220, "Elixir Staff (+8)", 1, 75000000, 100, "Zero 2", "Moradon", 805, 642),
-        ("MageKing", "Linen +8 Set ve Stafflar", "SELL", 1, 210080, "Mage Linen Robe (+8)", 1, 12000000, 100, "Zero 2", "Moradon", 805, 642),
-        ("MageKing", "Linen +8 Set ve Stafflar", "SELL", 2, 210090, "Mage Linen Pants (+8)", 1, 8000000, 100, "Zero 2", "Moradon", 805, 642),
-        ("ScrollDepo", "BUS BES & Genie En Ucuz", "SELL", 0, 379000, "Blessed Upgrade Scroll (BUS)", 100, 2050000, 1, "Zero 1", "Moradon", 820, 635),
-        ("ScrollDepo", "BUS BES & Genie En Ucuz", "SELL", 1, 379010, "Blessed Enchant Scroll (BES)", 50, 450000, 1, "Zero 1", "Moradon", 820, 635),
-        ("ScrollDepo", "BUS BES & Genie En Ucuz", "SELL", 2, 810166, "Spirit of Genie", 10, 3599000, 1, "Zero 1", "Moradon", 820, 635),
-        ("ScrollDepo", "BUS BES & Genie En Ucuz", "SELL", 3, 800062, "Genie Hammer", 30, 2000000, 1, "Zero 1", "Moradon", 820, 635),
-        ("WarriorBaba", "Raptor Iron Impact Kelepir", "SELL", 0, 130210, "Raptor (+8)", 1, 320000000, 100, "Zero 1", "Moradon", 810, 630),
-        ("WarriorBaba", "Raptor Iron Impact Kelepir", "SELL", 1, 130210, "Raptor (+7)", 1, 42000000, 100, "Zero 1", "Moradon", 810, 630),
-        ("WarriorBaba", "Raptor Iron Impact Kelepir", "SELL", 2, 130420, "Iron Impact (+8)", 1, 110000000, 100, "Zero 1", "Moradon", 810, 630),
-        ("TakiPazari", "Rol Roc Iron Neck", "SELL", 0, 310010, "Ring of Life (ROL)", 1, 180000000, 100, "Zero 3", "Moradon", 790, 620),
-        ("TakiPazari", "Rol Roc Iron Neck", "SELL", 1, 310020, "Ring of Courage (ROC)", 1, 95000000, 100, "Zero 3", "Moradon", 790, 620),
-        ("TakiPazari", "Rol Roc Iron Neck", "SELL", 2, 320010, "Iron Necklace", 1, 450000000, 100, "Zero 3", "Moradon", 790, 620),
-        ("KutuKiran", "Mavi Yesil Kırmızı Kutu", "SELL", 0, 379006, "Blue Treasure Chest", 40, 8500000, 1, "Zero 2", "Moradon", 815, 645),
-        ("KutuKiran", "Mavi Yesil Kırmızı Kutu", "SELL", 1, 379007, "Green Treasure Chest", 60, 2600000, 1, "Zero 2", "Moradon", 815, 645),
-        ("KutuKiran", "Mavi Yesil Kırmızı Kutu", "SELL", 2, 379008, "Red Treasure Chest", 100, 1400000, 1, "Zero 2", "Moradon", 815, 645),
+        ("ProTrader", "Shard +8 & Chitinler", "SELL", 0, 111210048, "Shard (+8)", 1, 380000000, 100, "Zero 1", "Moradon", 812, 638),
+        ("ProTrader", "Shard +8 & Chitinler", "SELL", 1, 111210047, "Shard (+7)", 1, 18500000, 100, "Zero 1", "Moradon", 812, 638),
+        ("ProTrader", "Shard +8 & Chitinler", "SELL", 2, 245001518, "Rogue Chitin Armor Pauldron (+8)", 1, 85000000, 100, "Zero 1", "Moradon", 812, 638),
+        ("ProTrader", "Shard +8 & Chitinler", "SELL", 3, 205002008, "Rogue Chitin Armor Pants (+8)", 1, 55000000, 100, "Zero 1", "Moradon", 812, 638),
+        ("ProTrader", "Shard +8 & Chitinler", "SELL", 4, 119101207, "Dark Vane (+7)", 1, 72000000, 100, "Zero 1", "Moradon", 812, 638),
         
-        # BUY Pazarları (Alıcılar - Arbitraj Simülasyonu)
-        ("BusAlinir", "BUS 2.000k NAKIT ALINIR", "BUY", 0, 379000, "Blessed Upgrade Scroll (BUS)", 500, 2000000, 1, "Zero 1", "Moradon", 825, 635),
-        ("GenieAlinir", "Genie 3.4m Alinir", "BUY", 0, 810166, "Spirit of Genie", 50, 3400000, 1, "Zero 1", "Moradon", 822, 637),
-        ("KutuAlinir", "Mavi 8.2m Kırmızı 1.3m", "BUY", 0, 379006, "Blue Treasure Chest", 100, 8200000, 1, "Zero 2", "Moradon", 818, 647),
-        ("KutuAlinir", "Mavi 8.2m Kırmızı 1.3m", "BUY", 1, 379008, "Red Treasure Chest", 200, 1300000, 1, "Zero 2", "Moradon", 818, 647),
-        ("TakiAlis", "ROL 170m ROC 90m ALINIR", "BUY", 0, 310010, "Ring of Life (ROL)", 5, 170000000, 100, "Zero 3", "Moradon", 795, 622),
-        ("TakiAlis", "ROL 170m ROC 90m ALINIR", "BUY", 1, 310020, "Ring of Courage (ROC)", 10, 90000000, 100, "Zero 3", "Moradon", 795, 622),
-        ("UpgradeciAlis", "Raptor +7 40m Shard +7 17m", "BUY", 0, 130210, "Raptor (+7)", 10, 40000000, 100, "Zero 1", "Moradon", 812, 628),
-        ("UpgradeciAlis", "Raptor +7 40m Shard +7 17m", "BUY", 1, 120410, "Shard (+7)", 15, 17000000, 100, "Zero 1", "Moradon", 812, 628),
+        ("WarriorBaba", "Raptor & Iron Impact Kelepir", "SELL", 0, 156210008, "Raptor (+8)", 1, 340000000, 100, "Zero 1", "Moradon", 810, 630),
+        ("WarriorBaba", "Raptor & Iron Impact Kelepir", "SELL", 1, 156210007, "Raptor (+7)", 1, 44000000, 100, "Zero 1", "Moradon", 810, 630),
+        ("WarriorBaba", "Raptor & Iron Impact Kelepir", "SELL", 2, 146210048, "Iron Impact (+8)", 1, 115000000, 100, "Zero 1", "Moradon", 810, 630),
+        ("WarriorBaba", "Raptor & Iron Impact Kelepir", "SELL", 3, 110912707, "Avedon (+7)", 1, 95000000, 100, "Zero 1", "Moradon", 810, 630),
+        ("WarriorBaba", "Raptor & Iron Impact Kelepir", "SELL", 4, 129101217, "Hanguk Sword (+7)", 1, 48000000, 100, "Zero 1", "Moradon", 810, 630),
+        ("WarriorBaba", "Raptor & Iron Impact Kelepir", "SELL", 5, 170250267, "Chitin Shield (+7)", 1, 1200000000, 100, "Zero 1", "Moradon", 810, 630),
+
+        ("MageKing", "Linen +8 Set ve Elixir", "SELL", 0, 181210508, "Elixir Staff (+8)", 1, 75000000, 100, "Zero 2", "Moradon", 805, 642),
+        ("MageKing", "Linen +8 Set ve Elixir", "SELL", 1, 262001008, "Mage Linen Robe (+8)", 1, 12500000, 100, "Zero 2", "Moradon", 805, 642),
+        ("MageKing", "Linen +8 Set ve Elixir", "SELL", 2, 262002008, "Mage Linen Pants (+8)", 1, 8500000, 100, "Zero 2", "Moradon", 805, 642),
+
+        ("ScrollDepo", "BUS BES & Genie En Ucuz", "SELL", 0, 379016000, "Blessed Upgrade Scroll (BUS)", 100, 2150000, 1, "Zero 1", "Moradon", 820, 635),
+        ("ScrollDepo", "BUS BES & Genie En Ucuz", "SELL", 1, 379022000, "Blessed Enchant Scroll (BES)", 50, 470000, 1, "Zero 1", "Moradon", 820, 635),
+        ("ScrollDepo", "BUS BES & Genie En Ucuz", "SELL", 2, 810378000, "Spirit of Genie", 15, 3650000, 1, "Zero 1", "Moradon", 820, 635),
+        ("ScrollDepo", "BUS BES & Genie En Ucuz", "SELL", 3, 810227000, "Genie Hammer", 30, 2100000, 1, "Zero 1", "Moradon", 820, 635),
+        
+        ("TakiPazari", "Rol Roc Iron Neck", "SELL", 0, 330150257, "Ring of Life (ROL)", 1, 185000000, 100, "Zero 3", "Moradon", 790, 620),
+        ("TakiPazari", "Rol Roc Iron Neck", "SELL", 1, 330110255, "Ring of Courage (ROC)", 1, 95000000, 100, "Zero 3", "Moradon", 790, 620),
+        ("TakiPazari", "Rol Roc Iron Neck", "SELL", 2, 320310126, "Iron Necklace", 1, 450000000, 100, "Zero 3", "Moradon", 790, 620),
+        ("TakiPazari", "Rol Roc Iron Neck", "SELL", 3, 340610107, "Iron Belt", 1, 160000000, 100, "Zero 3", "Moradon", 790, 620),
+
+        ("KutuKiran", "Kutu & Gem Marketi", "SELL", 0, 379156000, "Blue Treasure Chest", 40, 8600000, 1, "Zero 2", "Moradon", 815, 645),
+        ("KutuKiran", "Kutu & Gem Marketi", "SELL", 1, 379155000, "Green Treasure Chest", 60, 2750000, 1, "Zero 2", "Moradon", 815, 645),
+        ("KutuKiran", "Kutu & Gem Marketi", "SELL", 2, 379154000, "Red Treasure Chest", 100, 1450000, 1, "Zero 2", "Moradon", 815, 645),
+        ("KutuKiran", "Kutu & Gem Marketi", "SELL", 3, 389196000, "Silvery Gem", 50, 7200000, 1, "Zero 2", "Moradon", 815, 645),
+        ("KutuKiran", "Kutu & Gem Marketi", "SELL", 4, 379068000, "Gold bar", 5, 100000000, 1, "Zero 2", "Moradon", 815, 645),
+
+        # BUY Pazarları (Alıcılar - Arbitraj Analizi)
+        ("BusAlinir", "BUS 2.050k NAKIT ALINIR", "BUY", 0, 379016000, "Blessed Upgrade Scroll (BUS)", 500, 2050000, 1, "Zero 1", "Moradon", 825, 635),
+        ("GenieAlinir", "Genie 3.45m Alinir", "BUY", 0, 810378000, "Spirit of Genie", 50, 3450000, 1, "Zero 1", "Moradon", 822, 637),
+        ("KutuAlinir", "Mavi 8.3m Silvery 6.8m", "BUY", 0, 379156000, "Blue Treasure Chest", 100, 8300000, 1, "Zero 2", "Moradon", 818, 647),
+        ("KutuAlinir", "Mavi 8.3m Silvery 6.8m", "BUY", 1, 389196000, "Silvery Gem", 80, 6800000, 1, "Zero 2", "Moradon", 818, 647),
+        ("KutuAlinir", "Mavi 8.3m Silvery 6.8m", "BUY", 2, 379154000, "Red Treasure Chest", 200, 1350000, 1, "Zero 2", "Moradon", 818, 647),
+        ("TakiAlis", "ROL 175m ROC 88m ALINIR", "BUY", 0, 330150257, "Ring of Life (ROL)", 5, 175000000, 100, "Zero 3", "Moradon", 795, 622),
+        ("TakiAlis", "ROL 175m ROC 88m ALINIR", "BUY", 1, 330110255, "Ring of Courage (ROC)", 10, 88000000, 100, "Zero 3", "Moradon", 795, 622),
+        ("UpgradeciAlis", "Raptor +7 41.5m Shard +7 17.2m", "BUY", 0, 156210007, "Raptor (+7)", 10, 41500000, 100, "Zero 1", "Moradon", 812, 628),
+        ("UpgradeciAlis", "Raptor +7 41.5m Shard +7 17.2m", "BUY", 1, 111210047, "Shard (+7)", 15, 17200000, 100, "Zero 1", "Moradon", 812, 628),
+        ("UpgradeciAlis", "Raptor +7 41.5m Shard +7 17.2m", "BUY", 2, 110912707, "Avedon (+7)", 5, 87000000, 100, "Zero 1", "Moradon", 812, 628),
+        ("UpgradeciAlis", "Raptor +7 41.5m Shard +7 17.2m", "BUY", 3, 146210048, "Iron Impact (+8)", 5, 105000000, 100, "Zero 1", "Moradon", 812, 628),
     ]
     
     c.executemany("""

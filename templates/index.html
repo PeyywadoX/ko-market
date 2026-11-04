@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Knight Online - Canlı Pazar & Arbitraj Takip Sistemi</title>
+  <title>PeyywadoX Market — Knight Online Canlı Pazar & Arbitraj Sistemi</title>
+  <link rel="icon" type="image/png" href="/static/brand/peyywadox-mascot.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="/static/css/market.css">
 </head>
@@ -13,12 +14,12 @@
   <header class="market-header">
     <div class="header-container">
       <div class="brand-box">
-        <div class="brand-icon">
-          <i class="fa-solid fa-scale-balanced"></i>
+        <div class="brand-mascot-box" title="PeyywadoX Pazar Takip Motoru">
+          <img src="/static/brand/peyywadox-mascot.png" class="brand-mascot" alt="PeyywadoX">
         </div>
         <div class="brand-text">
-          <h1>KO Market <span class="brand-badge">PASSIVE MONITOR</span></h1>
-          <div class="brand-sub">Canlı Pazar Arama, Fiyat Makası & Yayınlama Servisi</div>
+          <h1>Peyywado<span class="brand-title-accent">X</span> Market <span class="brand-badge">PASSIVE MONITOR</span></h1>
+          <div class="brand-sub">Knight Online Canlı Pazar Arama, Fiyat Makası & Yayınlama Servisi</div>
         </div>
       </div>
 
@@ -57,6 +58,40 @@
   <!-- Ana İçerik -->
   <main class="main-container">
 
+    <!-- PeyywadoX Maskot Tanıtım & Durum Panosu -->
+    <div class="peyywado-hero-banner">
+      <div class="hero-mascot-side">
+        <div class="hero-mascot-img-wrap">
+          <img src="/static/brand/peyywadox-mascot.png" alt="PeyywadoX Mascot">
+        </div>
+        <div class="hero-text-wrap">
+          <h2>
+            PeyywadoX Akıllı Pazar İstihbaratı
+            <span class="brand-badge" style="font-size: 11px;">v2.0 STANDALONE</span>
+          </h2>
+          <p>
+            Knight Online USKO 2626 pasif ağ paket yakalayıcı, 500+ yerel eşya ikonu,
+            otomatik arbitraj kâr marjı hesaplayıcı ve harici entegrasyonlar için canlı REST / JSON besleme motoru.
+          </p>
+          <div class="hero-feature-pills">
+            <span class="feature-pill green"><i class="fa-solid fa-shield-halved"></i> %100 Pasif Dinleme (Sıfır Ban Riski)</span>
+            <span class="feature-pill orange"><i class="fa-solid fa-bolt"></i> Anlık Fiyat Makası Tespiti</span>
+            <span class="feature-pill"><i class="fa-solid fa-images"></i> 500+ Dahili Eşya İkonu</span>
+            <span class="feature-pill"><i class="fa-solid fa-network-wired"></i> Discord Webhook Uyumlu API</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right-cta">
+        <a href="/api/feed" target="_blank" class="action-btn" style="background: rgba(249, 115, 22, 0.15); border-color: rgba(249, 115, 22, 0.4); color: var(--brand);">
+          <i class="fa-solid fa-code"></i> /api/feed JSON Akışı
+        </a>
+        <a href="https://github.com/PeyywadoX/ko-market" target="_blank" class="action-btn">
+          <i class="fa-brands fa-github"></i> GitHub Deposu
+        </a>
+      </div>
+    </div>
+
     <!-- Sekme Geçiş Butonları -->
     <div class="view-tabs">
       <button class="view-tab-btn active" data-tab="market">
@@ -86,10 +121,11 @@
 
         <select id="channel-select" class="select-dropdown">
           <option value="">Tüm Kanallar</option>
+          <option value="Zero 1">Zero 1</option>
+          <option value="Zero 2">Zero 2</option>
+          <option value="Zero 3">Zero 3</option>
           <option value="Moradon 1">Moradon 1</option>
           <option value="Moradon 2">Moradon 2</option>
-          <option value="El Morad Castle">El Morad Castle</option>
-          <option value="Luferson Castle">Luferson Castle</option>
         </select>
 
         <select id="sort-select" class="select-dropdown">
@@ -120,11 +156,11 @@
         <table class="market-table">
           <thead>
             <tr>
-              <th style="width: 38%;">Eşya Bilgisi</th>
+              <th style="width: 36%;">Eşya Bilgisi</th>
               <th style="width: 10%;">Tür</th>
               <th style="width: 22%;">Birim Fiyat</th>
-              <th style="width: 15%;">Satıcı / Tezgah</th>
-              <th style="width: 15%;">Kanal & Zaman</th>
+              <th style="width: 18%;">Satıcı / Karakter</th>
+              <th style="width: 14%;">Kanal & Zaman</th>
             </tr>
           </thead>
           <tbody id="market-tbody">
@@ -230,8 +266,9 @@
 
   <!-- Sayfa Altı -->
   <footer class="market-footer">
-    <div>
-      <strong>Knight Online Market Sniffer & API</strong> • Açık Kaynak Pazar Analitiği Sistemi
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <img src="/static/brand/peyywadox-mascot.png" alt="PeyywadoX" style="width: 24px; height: 24px; object-fit: contain;">
+      <span><strong>PeyywadoX Market</strong> • Knight Online Pasif Pazar & Arbitraj Takip Sistemi</span>
     </div>
     <div style="display: flex; gap: 16px;">
       <a href="/api/feed" target="_blank" style="color: var(--brand);">JSON Feed</a>

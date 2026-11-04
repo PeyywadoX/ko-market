@@ -150,7 +150,10 @@ document.addEventListener("DOMContentLoaded", () => {
           </td>
           <td>
             <div class="merchant-cell">
-              <span class="merchant-name">${it.merchant_name}</span>
+              <div class="merchant-info-row">
+                <img src="${it.merchant_class_icon || '/static/assets/classes/Human_Warrior.png'}" class="merchant-class-avatar" alt="" onerror="this.style.display='none'">
+                <span class="merchant-name">${it.merchant_name}</span>
+              </div>
               <span class="merchant-pos">${it.pos_x && it.pos_z ? `X: ${Math.round(it.pos_x)}, Z: ${Math.round(it.pos_z)}` : 'Moradon'}</span>
             </div>
           </td>
@@ -308,6 +311,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="stall-header">
             <div>
               <div style="display: flex; align-items: center; gap: 8px;">
+                <img src="${s.merchant_class_icon || '/static/assets/classes/Human_Warrior.png'}" class="merchant-class-avatar" alt="" onerror="this.style.display='none'">
                 <span class="merchant-name" style="font-size: 15px;">${s.merchant_name}</span>
                 ${badge}
               </div>

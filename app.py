@@ -10,6 +10,9 @@ import os
 import sys
 import time
 import json
+import urllib.request
+from datetime import datetime
+from flask import Flask, request, jsonify, render_template, send_from_directory, Response
 
 if sys.platform == "win32":
     try:
@@ -17,8 +20,6 @@ if sys.platform == "win32":
         sys.stderr.reconfigure(encoding="utf-8")
     except Exception:
         pass
-from datetime import datetime
-from flask import Flask, request, jsonify, render_template, send_from_directory, Response
 
 import market_db
 import items_db
@@ -27,8 +28,29 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 ICONS_DIR = os.path.join(STATIC_DIR, "assets", "items")
+BRAND_DIR = os.path.join(STATIC_DIR, "brand")
+CLASSES_DIR = os.path.join(STATIC_DIR, "assets", "classes")
 
 app = Flask(__name__, static_folder=STATIC_DIR, template_folder=TEMPLATES_DIR)
+
+CLASSES_LIST = [
+    "Human_Warrior.png", "Human_Rogue.png", "Human_Mage.png", "Human_Priest.png", "Human_Kurian.png",
+    "Karus_Warrior.png", "Karus_Rogue.png", "Karus_Mage.png", "Karus_Priest.png", "Karus_Kurian.png"
+]
+
+NAMED_CLASS_MAP = {
+    "protrader": "Human_Rogue.png",
+    "warriorbaba": "Karus_Warrior.png",
+    "mageking": "Karus_Mage.png",
+    "scrolldepo": "Human_Priest.png",
+    "takipazari": "Human_Priest.png",
+    "kutukiran": "Karus_Kurian.png",
+    "busalinir": "Human_Warrior.png",
+    "geniealinir": "Karus_Mage.png",
+    "kutualinir": "Human_Rogue.png",
+    "takialis": "Human_Priest.png",
+    "upgradecialis": "Karus_Rogue.png",
+}
 
 # Formatlayıcı Fonksiyon
 def enrich_item(item):
@@ -36,9 +58,19 @@ def enrich_item(item):
     price = item.get("price") or 0
     it_id = item.get("item_id") or 0
     item_name = item.get("item_name") or "Bilinmeyen Eşya"
+    m_name = (item.get("merchant_name") or "").strip()
     
-    # İkon
-    icon = items_db.get_item_icon(it_id) if it_id > 0 else "default.svg"
+    # İkon tespiti
+    icon = items_db.get_item_icon(it_id, item_name)
+    
+    # Satıcı karakter sınıfı tespiti
+    if m_name.lower() in NAMED_CLASS_MAP:
+        c_icon = NAMED_CLASS_MAP[m_name.lower()]
+    else:
+        idx = sum(ord(c) for c in m_name) % len(CLASSES_LIST) if m_name else 0
+        c_icon = CLASSES_LIST[idx]
+        
+    merchant_class_icon = f"/static/assets/classes/{c_icon}"
     
     # Para formatı (Coin, M, GB)
     m_val = round(price / 1_000_000, 2)
@@ -78,10 +110,11 @@ def enrich_item(item):
         category = "Takı"
     elif any(w in n_lower for w in ["scroll", "bus", "bes", "genie", "trina", "hammer"]):
         category = "Parşömen & PUS"
-    elif any(w in n_lower for w in ["chest", "kutu", "gem", "fragment"]):
+    elif any(w in n_lower for w in ["chest", "kutu", "gem", "fragment", "gold bar"]):
         category = "Kutu & Gem"
 
     item["icon"] = icon
+    item["merchant_class_icon"] = merchant_class_icon
     item["price_tag"] = price_tag
     item["formatted_coin"] = formatted_coin
     item["grade_color"] = grade_color
@@ -95,13 +128,49 @@ def index():
     """Ana Pazar Arayüzü."""
     return render_template("index.html")
 
+@app.route("/brand/<path:filename>")
+def serve_brand(filename):
+    """Marka ve maskot görsellerini sunar."""
+    safe_name = os.path.basename(filename)
+    return send_from_directory(BRAND_DIR, safe_name)
+
 @app.route("/icons/<path:filename>")
 def serve_icon(filename):
-    """Yerel eşya ikonunu sunar."""
-    safe_name = os.path.basename(filename)
+    """Yerel eşya ikonunu sunar. Diskte yoksa upstream'den önbelleğe alıp sunar."""
+    safe_name = os.path.basename(filename).strip()
     icon_path = os.path.join(ICONS_DIR, safe_name)
-    if os.path.exists(icon_path):
+    
+    # 1. Yerel disk kontrolü
+    if os.path.exists(icon_path) and os.path.getsize(icon_path) > 0:
         return send_from_directory(ICONS_DIR, safe_name)
+        
+    # 2. Ön ek tabanlı varyant araması
+    if safe_name.startswith("itemicon_"):
+        parts = safe_name.split("_")
+        if len(parts) >= 5:
+            prefix = f"{parts[0]}_{parts[1]}_{parts[2]}"
+            for suffix in ["_00_0.jpg", "_10_0.jpg", "_20_0.jpg", "_12_1.jpg", "_0.jpg"]:
+                cand = f"{prefix}{suffix}"
+                cand_path = os.path.join(ICONS_DIR, cand)
+                if os.path.exists(cand_path) and os.path.getsize(cand_path) > 0:
+                    return send_from_directory(ICONS_DIR, cand)
+                    
+    # 3. Upstream (usko.live) önbelleğe alma
+    if safe_name.startswith("itemicon_") and safe_name.endswith(".jpg"):
+        try:
+            upstream_url = f"https://usko.live/assets/items/{safe_name}"
+            req = urllib.request.Request(upstream_url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=2.0) as r:
+                if r.status == 200:
+                    data = r.read()
+                    if data:
+                        with open(icon_path, "wb") as f:
+                            f.write(data)
+                        return send_from_directory(ICONS_DIR, safe_name)
+        except Exception:
+            pass
+            
+    # 4. Varsayılan SVG
     return send_from_directory(ICONS_DIR, "default.svg")
 
 @app.route("/api/market")
@@ -150,7 +219,7 @@ def api_arbitrage():
         it["min_sell_fmt"] = f"{min_s:,}".replace(",", ".")
         it["max_buy_fmt"] = f"{max_b:,}".replace(",", ".")
         it["profit_fmt"] = f"{profit:,}".replace(",", ".")
-        it["icon"] = items_db.get_item_icon(items_db.get_item_id_by_name(it["item_name"]))
+        it["icon"] = items_db.get_item_icon(items_db.get_item_id_by_name(it["item_name"]), it["item_name"])
     
     return jsonify({
         "total": len(items),
@@ -168,6 +237,10 @@ def api_stalls():
         s["formatted_total"] = f"{int(s['total_val'] or 0):,}".replace(",", ".")
         for it in s["items"]:
             enrich_item(it)
+        if s["items"]:
+            s["merchant_class_icon"] = s["items"][0].get("merchant_class_icon")
+        else:
+            s["merchant_class_icon"] = "/static/assets/classes/Human_Warrior.png"
             
     return jsonify({"total": len(stalls), "stalls": stalls})
 

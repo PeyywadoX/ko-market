@@ -38,8 +38,10 @@ Ayrıca sunduğu **JSON Feed API** sayesinde pazar verilerini Discord botların�
   DLL enjeksiyonu, hook, hafıza okuma veya dosya modifikasyonu **kesinlikle içermez**. Paketler sadece Wireshark / TShark motoruyla pasif soket seviyesinde dinlenir.
 - ⚡ **Yüksek Performanslı SQLite WAL Mimarisi:**
   Eşzamanlı okuma ve yazma işlemlerinde kilitlenmeyen, asenkron kuyruklu (Write Queue) SQLite WAL altyapısı.
-- 🎨 **Modern Dark Web Arayüzü & Dahili 500+ Eşya İkonu:**
-  Harici CDN gereksinimi duymadan yerel SVG/PNG eşya ikonlarıyla çalışan duyarlı (responsive) şık arayüz.
+- 🎨 **PeyywadoX Maskotu, Dark Tasarım & 500+ Eşya İkonu:**
+  Resmi PeyywadoX maskotu, Karus & El Morad ırk/sınıf avatarları ve harici CDN gereksinimi duymadan çalışan 500+ yerel eşya ikonu.
+- 📚 **2.300+ Eşyalık USKO Kataloğu:**
+  Gerçek USKO eşya ID çözümleyici (`catalog_data.json`), +1..+10 ve Rebirth seviye varyasyonları.
 
 ---
 
