@@ -1,8 +1,8 @@
 <div align="center">
 
-# ⚖️ KO Market — Knight Online Canlı Pazar & Arbitraj Sistemi
+# KO Market - Knight Online Pazar ve Arbitraj Takip Sistemi
 
-**Knight Online için Pasif Ağ Paket Dinleme, Anlık Pazar Arama, Arbitraj Analitiği ve REST API / JSON Yayınlama Motoru**
+**Knight Online için Pasif Ağ Paket Dinleme, Anlık Pazar Arama, Arbitraj Analitiği ve REST API / JSON Veri Akışı**
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://python.org)
 [![Flask](https://img.shields.io/badge/Flask-3.0%2B-black.svg?logo=flask&logoColor=white)](https://flask.palletsprojects.com)
@@ -14,38 +14,38 @@
 
 ---
 
-## 📌 Proje Hakkında
+## Proje Hakkında
 
-**KO Market**, Knight Online oyuncuları ve topluluk geliştiricileri için tasarlanmış bağımsız, hafif ve modern bir pazar takip platformudur. 
+**KO Market**, Knight Online için geliştirilmiş hafif ve modüler bir pazar takip ve fiyat analiz platformudur.
 
-Oyun istemcisine (client) veya belleğe (RAM) hiçbir şekilde müdahale etmeden, sadece yerel ağ arayüzündeki pazar paketlerini pasif olarak yakalar, çözer ve web arayüzünde aranabilir, filtrelenebilir ve analiz edilebilir hale getirir.
+Oyun istemcisine (client) veya belleğe (RAM) müdahale etmeden, yerel ağ arayüzündeki pazar paketlerini pasif olarak yakalar, çözer ve web arayüzünde aranabilir, filtrelenebilir ve analiz edilebilir hale getirir.
 
-Ayrıca sunduğu **JSON Feed API** sayesinde pazar verilerini Discord botlarınıza, web sitelerinize veya Telegram bildirim kanallarınıza kolayca entegre edebilirsiniz.
+Sunulan **JSON Feed API** sayesinde pazar verileri Discord botlarına, web sitelerine veya bildirim servislerine kolayca entegre edilebilir.
 
 ---
 
-## ✨ Öne Çıkan Özellikler
+## Özellikler
 
-- 🔍 **Anlık Eşya Arama & Filtreleme:**
-  Eşya adına (örn: *Shard*, *Raptor*, *+8*, *Chitin*), pazar türüne (**SELL / BUY**), sunucu kanalına (Moradon 1, Moradon 2 vb.) ve eşya kategorisine göre gecikmesiz canlı arama.
-- ⚖️ **Otomatik Arbitraj & Kâr Fırsatları:**
-  Pazardaki en ucuz satış (SELL) fiyatı ile en yüksek alış (BUY) fiyatını anlık eşleştirerek net kâr makasını ve marj oranını (%) hesaplar.
-- 🏪 **Açık Tezgah (Merchant) Görünümü:**
+- **Anlık Eşya Arama ve Filtreleme:**  
+  Eşya adına (örn: *Shard*, *Raptor*, *+8*, *Chitin*), pazar türüne (**SELL / BUY**), sunucu kanalına (Zero 1, Moradon 1 vb.) ve eşya kategorisine göre filtreleme.
+- **Arbitraj ve Fiyat Analizi:**  
+  Pazardaki en ucuz satış (SELL) fiyatı ile en yüksek alış (BUY) fiyatını anlık eşleştirerek fiyat makasını ve marj oranını (%) hesaplar.
+- **Açık Tezgah (Merchant) Görünümü:**  
   Alandaki tüm aktif pazar tezgahlarını, 12 yuvalı görsel envanterlerini ve toplam tezgah değerlerini listeler.
-- 📡 **Dış Entegrasyonlar İçin REST API & JSON Feed:**
-  Discord webhook'ları, pazar botları ve harici analiz yazılımları için optimize edilmiş JSON besleme uç noktaları (`/api/feed`, `/api/market`, `/api/arbitrage`).
-- 🛡️ **%100 Pasif ve Güvenli:**
-  DLL enjeksiyonu, hook, hafıza okuma veya dosya modifikasyonu **kesinlikle içermez**. Paketler sadece Wireshark / TShark motoruyla pasif soket seviyesinde dinlenir.
-- ⚡ **Yüksek Performanslı SQLite WAL Mimarisi:**
+- **Dış Entegrasyonlar İçin REST API ve JSON Feed:**  
+  Discord webhook'ları ve harici analiz yazılımları için optimize edilmiş JSON besleme uç noktaları (`/api/feed`, `/api/market`, `/api/arbitrage`).
+- **Pasif Ağ Analizi:**  
+  DLL enjeksiyonu, hook, hafıza okuma veya dosya modifikasyonu içermez. Paketler Wireshark / TShark motoruyla soket seviyesinde pasif olarak dinlenir.
+- **SQLite WAL Mimarisi:**  
   Eşzamanlı okuma ve yazma işlemlerinde kilitlenmeyen, asenkron kuyruklu (Write Queue) SQLite WAL altyapısı.
-- 🎨 **Dark Tasarım & 500+ Eşya İkonu:**
-  Karus & El Morad ırk/sınıf avatarları ve harici CDN gereksinimi duymadan çalışan 500+ yerel eşya ikonu.
-- 📚 **2.300+ Eşyalık USKO Kataloğu:**
-  Gerçek USKO eşya ID çözümleyici (`catalog_data.json`), +1..+10 ve Rebirth seviye varyasyonları.
+- **Dark Tasarım ve 500+ Eşya İkonu:**  
+  Karus ve El Morad ırk/sınıf avatarları ile harici CDN gereksinimi duymadan çalışan 500+ yerel eşya ikonu.
+- **2.300+ Eşyalık USKO Kataloğu:**  
+  Orijinal USKO eşya ID çözümleyici (`catalog_data.json`), +1..+10 ve Rebirth seviye varyasyonları.
 
 ---
 
-## 🏗️ Mimari Şeması
+## Mimari Şeması
 
 ```
                              [ Knight Online İstemcisi ]
@@ -72,13 +72,11 @@ Ayrıca sunduğu **JSON Feed API** sayesinde pazar verilerini Discord botların�
 
 ---
 
-## 🚀 Kolay Kurulum & Başlatma
+## Kurulum ve Başlatma
 
-KO Market hem **yazılımcılar** hem de **sıradan oyuncular** düşünülerek tasarlandı. Hiçbir komut satırı deneyiminiz olmasa bile 1 dakikada kurup çalıştırabilirsiniz!
+### Yöntem 1: Windows İçin Tek Tıkla Kurulum
 
-### ⚡ Yöntem 1: Windows İçin Tek Tıkla Kurulum (En Kolay Yol)
-
-1. Projeyi ZIP olarak indirin veya klonlayın:
+1. Projeyi indirin veya klonlayın:
    ```bash
    git clone https://github.com/PeyywadoX/ko-market.git
    cd ko-market
@@ -86,28 +84,28 @@ KO Market hem **yazılımcılar** hem de **sıradan oyuncular** düşünülerek 
 2. **`kurulum.bat`** (veya `setup.bat`) dosyasına çift tıklayın.  
    *Sanal ortamı oluşturur, kütüphaneleri yükler ve veritabanını hazırlar.*
 3. **`start_server.bat`** dosyasına çift tıklayarak paneli açın.  
-   Tarayıcınızda otomatik olarak **`http://127.0.0.1:5000`** adresine gidebilirsiniz!
+   Tarayıcınızda **`http://127.0.0.1:5000`** adresine gidebilirsiniz.
 
 ---
 
-### 🎮 Canlı Paket Dinleyici (Sniffer) Kurulumu
+### Canlı Paket Dinleyici (Sniffer) Kurulumu
 
-> **Önemli:** Sadece pazar verilerini incelemek, web panelini kullanmak veya Discord botuna JSON Feed bağlamak için Wireshark **gerekmez**. Sistem dahili gerçekçi verilerle hemen çalışır.
+> **Not:** Sadece pazar verilerini incelemek, web panelini kullanmak veya Discord botuna JSON Feed bağlamak için Wireshark **gerekmez**. Sistem dahili gerçekçi verilerle doğrudan çalışır.
 
-Eğer **Knight Online oynarken kendi oyununuzdaki pazar paketlerini canlı yakalamak** istiyorsanız:
+Knight Online çalışırken kendi oyununuzdaki pazar paketlerini canlı yakalamak istiyorsanız:
 
 1. [Wireshark İndir](https://www.wireshark.org/download.html) (Windows Installer 64-bit).
-2. Kurulum ekranında şu kutucukların işaretli olduğundan emin olun:
-   - ✅ **TShark** (Komut satırı motoru)
-   - ✅ **Install Npcap** (Windows paket yakalama sürücüsü)
+2. Kurulum ekranında şu seçeneklerin işaretli olduğundan emin olun:
+   - **TShark** (Komut satırı motoru)
+   - **Install Npcap** (Paket yakalama sürücüsü)
 3. Npcap kurulurken:
-   - ✅ **"Install Npcap in WinPcap API-compatible Mode"** seçeneğini işaretleyin.
+   - **"Install Npcap in WinPcap API-compatible Mode"** seçeneğini işaretleyin.
 4. **`start_sniffer.bat`** dosyasını çalıştırın.  
-   Oyunda Moradon pazar bölgesinde gezindikçe veya tezgahları açtıkça tüm eşyalar anında panelinize ve API'nize dökülür!
+   Oyunda Moradon pazar bölgesinde gezindikçe veya tezgahları açtıkça tüm eşyalar anında veritabanına ve web paneline yansır.
 
 ---
 
-### 💻 Yöntem 2: Manuel Geliştirici Kurulumu
+### Yöntem 2: Manuel Geliştirici Kurulumu
 
 ```bash
 # Depoyu klonlayın
@@ -133,13 +131,11 @@ python market_sniffer.py
 
 ---
 
-## 📡 REST API & JSON Feed Dokümantasyonu
+## REST API ve JSON Feed Dokümantasyonu
 
-KO Market, harici uygulamalarınız için zengin JSON API uç noktaları sunar:
-
-### 1. Canlı JSON Feed (En Kolay Entegrasyon)
+### 1. Canlı JSON Feed
 - **Uç Nokta:** `GET /api/feed`
-- **Açıklama:** Discord botları veya web widget'ları için özet pazar hacmi ve en son listelenen 30 eşyayı döner.
+- **Açıklama:** Discord botları veya web widget'ları için pazar özeti ve son listelenen eşyaları döner.
 
 ```json
 {
@@ -160,7 +156,7 @@ KO Market, harici uygulamalarınız için zengin JSON API uç noktaları sunar:
       "price": 380000000,
       "price_tag": "3.8 GB",
       "seller": "ShadowRogue",
-      "channel": "Moradon 1",
+      "channel": "Zero 1",
       "time": "2026-11-04 21:55:00"
     }
   ]
@@ -169,22 +165,22 @@ KO Market, harici uygulamalarınız için zengin JSON API uç noktaları sunar:
 
 ---
 
-### 2. Gelişmiş Pazar Arama
+### 2. Pazar Arama
 - **Uç Nokta:** `GET /api/market`
 - **Parametreler:**
   - `q`: Eşya arama terimi (örn: `raptor`, `chitin`, `+7`)
   - `type`: `SELL`, `BUY` veya boş (tümü)
   - `category`: `Dagger`, `Silah`, `Zırh`, `Takı`, `Parşömen & PUS`, `Kutu & Gem`
-  - `channel`: Sunucu kanalı (örn: `Moradon 1`)
+  - `channel`: Sunucu kanalı (örn: `Zero 1`)
   - `sort`: `price_asc` (varsayılan), `price_desc`, `newest`, `name_asc`
   - `limit`: Sonuç limiti (varsayılan: 60, maks: 200)
   - `offset`: Sayfalama ofseti
 
 ---
 
-### 3. Arbitraj & Kâr Fırsatları
+### 3. Arbitraj Fırsatları
 - **Uç Nokta:** `GET /api/arbitrage`
-- **Açıklama:** En ucuz SELL ile en yüksek BUY arasındaki kâr marjına göre sıralanmış eşyaları döner.
+- **Açıklama:** En ucuz SELL ile en yüksek BUY arasındaki fiyat farkına göre sıralanmış eşyaları döner.
 
 ```bash
 curl -X GET "http://127.0.0.1:5000/api/arbitrage"
@@ -195,11 +191,11 @@ curl -X GET "http://127.0.0.1:5000/api/arbitrage"
 ### 4. Tekil Eşya Fiyat Özeti
 - **Uç Nokta:** `GET /api/item/<item_name>`
 - **Örnek:** `/api/item/Shard (+8)`
-- **Açıklama:** Eşyanın en düşük satış, en yüksek alış fiyatlarını ve aktif tüm satıcılarını listeler.
+- **Açıklama:** Eşyanın en düşük satış, en yüksek alış fiyatlarını ve aktif satıcılarını listeler.
 
 ---
 
-## 📂 Proje Dizin Yapısı
+## Proje Dizin Yapısı
 
 ```
 ko_market/
@@ -207,33 +203,39 @@ ko_market/
 ├── market_sniffer.py       # TShark tabanlı pasif paket yakalama motoru
 ├── market_db.py            # SQLite WAL veritabanı, asenkron kuyruk & modeller
 ├── items_db.py             # Eşya kataloğu, ID çözümleyici & ikon eşleştirici
-├── requirements.txt        # Minimal Python bağımlılıkları
-├── start_server.bat        # Tek tıkla sunucu başlatıcı
-├── start_sniffer.bat       # Tek tıkla paket dinleyici başlatıcı
+├── catalog_data.json       # 2.300+ USKO eşya ID ve ikon kataloğu
+├── requirements.txt        # Python bağımlılıkları
+├── kurulum.bat             # Otomatik kurulum sihirbazı
+├── setup.bat               # Kurulum sihirbazı alias
+├── start_server.bat        # Web sunucusu başlatıcı
+├── start_sniffer.bat       # Paket dinleyici başlatıcı
 ├── LICENSE                 # MIT Lisansı
-├── README.md               # Proje dökümantasyonu
+├── README.md               # Proje dokümantasyonu
 ├── templates/
-│   └── index.html          # Modern SPA Pazar Arayüzü
+│   └── index.html          # Pazar Arayüzü
 └── static/
     ├── css/
-    │   └── market.css      # Dark temalı modern stil şablonu
+    │   └── market.css      # Stil şablonu
     ├── js/
-    │   └── market.js       # Dinamik filtreleme, arama ve modal kontrol scripti
+    │   └── market.js       # Dinamik filtreleme ve arayüz kontrolleri
+    ├── brand/
+    │   └── peyywadox-mascot.png  # PeyywadoX logo/maskot görseli
     └── assets/
+        ├── classes/        # Karakter sınıf ikonları
         └── items/          # 500+ eşya ikon kütüphanesi
 ```
 
 ---
 
-## ⚖️ Yasal Uyarı / Disclaimer
+## Yasal Uyarı / Disclaimer
 
 Bu proje **eğitim, araştırma ve ağ analizi** amacıyla geliştirilmiştir. 
 - Oyun istemcisinin belleğine (RAM) müdahale etmez, kod enjekte etmez ve tersine mühendislik yapmaz.
-- Yalnızca ağ bağdaştırıcınızdan geçen ve zaten bilgisayarınıza ulaşmış olan açık ağ paketlerini pasif olarak inceler.
-- Yazılımın kullanımından doğabilecek sorumluluk tamamen son kullanıcıya aittir.
+- Yalnızca ağ bağdaştırıcısından geçen açık ağ paketlerini pasif olarak inceler.
+- Yazılımın kullanımından doğabilecek sorumluluk son kullanıcıya aittir.
 
 ---
 
-## 📄 Lisans
+## Lisans
 
-Bu proje [MIT Lisansı](LICENSE) kapsamında açık kaynak olarak yayınlanmıştır. Dilediğiniz gibi geliştirebilir, fork'layabilir ve kendi projelerinizde kullanabilirsiniz.
+Bu proje [MIT Lisansı](LICENSE) kapsamında açık kaynak olarak yayınlanmıştır.

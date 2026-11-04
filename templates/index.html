@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PeyywadoX Market — Knight Online Canlı Pazar & Arbitraj Sistemi</title>
+  <title>PeyywadoX Market - Knight Online Pazar ve Arbitraj Sistemi</title>
   <link rel="icon" type="image/png" href="/static/brand/peyywadox-mascot.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="/static/css/market.css">
@@ -14,18 +14,18 @@
   <header class="market-header">
     <div class="header-container">
       <div class="brand-box">
-        <div class="brand-mascot-box" title="PeyywadoX Pazar Takip Motoru">
+        <div class="brand-mascot-box" title="PeyywadoX Market">
           <img src="/static/brand/peyywadox-mascot.png" class="brand-mascot" alt="PeyywadoX">
         </div>
         <div class="brand-text">
-          <h1>Peyywado<span class="brand-title-accent">X</span> Market <span class="brand-badge">PASSIVE MONITOR</span></h1>
-          <div class="brand-sub">Knight Online Canlı Pazar Arama, Fiyat Makası & Yayınlama Servisi</div>
+          <h1>Peyywado<span class="brand-title-accent">X</span> Market <span class="brand-badge">PAZAR TAKIP</span></h1>
+          <div class="brand-sub">Knight Online Pazar Arama, Fiyat ve Arbitraj Sistemi</div>
         </div>
       </div>
 
       <!-- Canlı Metrikler -->
       <div class="stats-strip">
-        <div class="stat-pill" title="Pazardaki toplam listelenen eşya adedi">
+        <div class="stat-pill" title="Pazardaki toplam eşya adedi">
           <span class="stat-label"><i class="fa-solid fa-boxes-stacked"></i> Eşya</span>
           <span class="stat-val" id="stat-total-items">-</span>
         </div>
@@ -45,10 +45,10 @@
 
       <!-- Üst Eylemler -->
       <div class="header-actions">
-        <a href="/api/feed" target="_blank" class="action-btn" title="Dış botlar ve entegrasyonlar için JSON akışı">
-          <i class="fa-solid fa-rss"></i> JSON Feed
+        <a href="/api/feed" target="_blank" class="action-btn" title="JSON veri akışı">
+          <i class="fa-solid fa-code"></i> JSON Feed
         </a>
-        <button id="btn-refresh" class="action-btn primary" title="Verileri şimdi yenile">
+        <button id="btn-refresh" class="action-btn primary" title="Verileri yenile">
           <i class="fa-solid fa-arrows-rotate"></i> Yenile
         </button>
       </div>
@@ -58,47 +58,13 @@
   <!-- Ana İçerik -->
   <main class="main-container">
 
-    <!-- PeyywadoX Maskot Tanıtım & Durum Panosu -->
-    <div class="peyywado-hero-banner">
-      <div class="hero-mascot-side">
-        <div class="hero-mascot-img-wrap">
-          <img src="/static/brand/peyywadox-mascot.png" alt="PeyywadoX Mascot">
-        </div>
-        <div class="hero-text-wrap">
-          <h2>
-            PeyywadoX Akıllı Pazar İstihbaratı
-            <span class="brand-badge" style="font-size: 11px;">v2.0 STANDALONE</span>
-          </h2>
-          <p>
-            Knight Online USKO 2626 pasif ağ paket yakalayıcı, 500+ yerel eşya ikonu,
-            otomatik arbitraj kâr marjı hesaplayıcı ve harici entegrasyonlar için canlı REST / JSON besleme motoru.
-          </p>
-          <div class="hero-feature-pills">
-            <span class="feature-pill green"><i class="fa-solid fa-shield-halved"></i> %100 Pasif Dinleme (Sıfır Ban Riski)</span>
-            <span class="feature-pill orange"><i class="fa-solid fa-bolt"></i> Anlık Fiyat Makası Tespiti</span>
-            <span class="feature-pill"><i class="fa-solid fa-images"></i> 500+ Dahili Eşya İkonu</span>
-            <span class="feature-pill"><i class="fa-solid fa-network-wired"></i> Discord Webhook Uyumlu API</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="hero-right-cta">
-        <a href="/api/feed" target="_blank" class="action-btn" style="background: rgba(249, 115, 22, 0.15); border-color: rgba(249, 115, 22, 0.4); color: var(--brand);">
-          <i class="fa-solid fa-code"></i> /api/feed JSON Akışı
-        </a>
-        <a href="https://github.com/PeyywadoX/ko-market" target="_blank" class="action-btn">
-          <i class="fa-brands fa-github"></i> GitHub Deposu
-        </a>
-      </div>
-    </div>
-
     <!-- Sekme Geçiş Butonları -->
     <div class="view-tabs">
       <button class="view-tab-btn active" data-tab="market">
-        <i class="fa-solid fa-magnifying-glass-dollar"></i> Canlı Pazar Listesi
+        <i class="fa-solid fa-magnifying-glass"></i> Canlı Pazar Listesi
       </button>
       <button class="view-tab-btn" data-tab="arbitrage">
-        <i class="fa-solid fa-chart-line"></i> Arbitraj & Kâr Fırsatları
+        <i class="fa-solid fa-chart-line"></i> Arbitraj Analizi
       </button>
       <button class="view-tab-btn" data-tab="stalls">
         <i class="fa-solid fa-shop"></i> Pazar Tezgahları
@@ -178,7 +144,7 @@
     <div id="view-arbitrage" class="tab-view" style="display: none;">
       <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 20px; font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 12px;">
         <i class="fa-solid fa-circle-info" style="color: var(--brand); font-size: 16px;"></i>
-        <span><strong>Arbitraj Nedir?</strong> Bir eşyayı en ucuz satan SELL pazarından alıp, anında en yüksek fiyata alan BUY pazarına sattığınızda elde edeceğiniz brüt kâr fırsatlarını listeler.</span>
+        <span>Aynı eşyanın en ucuz SELL (satış) ve en yüksek BUY (alış) pazarları arasındaki anlık fiyat farklarını ve marj oranını listeler.</span>
       </div>
 
       <div class="table-wrapper">
@@ -188,14 +154,14 @@
               <th style="width: 30%;">Eşya Adı</th>
               <th style="width: 18%;">En Ucuz SELL (Satış)</th>
               <th style="width: 18%;">En Yüksek BUY (Alış)</th>
-              <th style="width: 20%;">Kâr Makası (Arbitraj)</th>
-              <th style="width: 14%;">Fırsat</th>
+              <th style="width: 20%;">Fiyat Farkı</th>
+              <th style="width: 14%;">Durum</th>
             </tr>
           </thead>
           <tbody id="arbitrage-tbody">
             <tr>
               <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
-                <i class="fa-solid fa-spinner fa-spin"></i> Arbitraj fırsatları analiz ediliyor...
+                <i class="fa-solid fa-spinner fa-spin"></i> Arbitraj analizi yükleniyor...
               </td>
             </tr>
           </tbody>
@@ -268,7 +234,7 @@
   <footer class="market-footer">
     <div style="display: flex; align-items: center; gap: 10px;">
       <img src="/static/brand/peyywadox-mascot.png" alt="PeyywadoX" style="width: 24px; height: 24px; object-fit: contain;">
-      <span><strong>PeyywadoX Market</strong> • Knight Online Pasif Pazar & Arbitraj Takip Sistemi</span>
+      <span><strong>PeyywadoX Market</strong> - Knight Online Pazar ve Arbitraj Sistemi</span>
     </div>
     <div style="display: flex; gap: 16px;">
       <a href="/api/feed" target="_blank" style="color: var(--brand);">JSON Feed</a>
