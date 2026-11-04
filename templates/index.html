@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knight Online - Canlı Pazar & Arbitraj Takip Sistemi</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/market.css">
+</head>
+<body>
+
+  <!-- Üst Başlık & İstatistik Çubuğu -->
+  <header class="market-header">
+    <div class="header-container">
+      <div class="brand-box">
+        <div class="brand-icon">
+          <i class="fa-solid fa-scale-balanced"></i>
+        </div>
+        <div class="brand-text">
+          <h1>KO Market <span class="brand-badge">PASSIVE MONITOR</span></h1>
+          <div class="brand-sub">Canlı Pazar Arama, Fiyat Makası & Yayınlama Servisi</div>
+        </div>
+      </div>
+
+      <!-- Canlı Metrikler -->
+      <div class="stats-strip">
+        <div class="stat-pill" title="Pazardaki toplam listelenen eşya adedi">
+          <span class="stat-label"><i class="fa-solid fa-boxes-stacked"></i> Eşya</span>
+          <span class="stat-val" id="stat-total-items">-</span>
+        </div>
+        <div class="stat-pill" title="Açık olan merchant sayısı">
+          <span class="stat-label"><i class="fa-solid fa-store"></i> Tezgah</span>
+          <span class="stat-val" id="stat-merchants">-</span>
+        </div>
+        <div class="stat-pill" title="SELL / BUY pazar dağılımı">
+          <span class="stat-label"><i class="fa-solid fa-arrow-right-arrow-left"></i> Satış / Alış</span>
+          <span class="stat-val" id="stat-sell-buy">- / -</span>
+        </div>
+        <div class="stat-pill" title="Pazardaki toplam para hacmi">
+          <span class="stat-label"><i class="fa-solid fa-coins"></i> Hacim</span>
+          <span class="stat-val" id="stat-total-volume" style="color: var(--gold);">- GB</span>
+        </div>
+      </div>
+
+      <!-- Üst Eylemler -->
+      <div class="header-actions">
+        <a href="/api/feed" target="_blank" class="action-btn" title="Dış botlar ve entegrasyonlar için JSON akışı">
+          <i class="fa-solid fa-rss"></i> JSON Feed
+        </a>
+        <button id="btn-refresh" class="action-btn primary" title="Verileri şimdi yenile">
+          <i class="fa-solid fa-arrows-rotate"></i> Yenile
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Ana İçerik -->
+  <main class="main-container">
+
+    <!-- Sekme Geçiş Butonları -->
+    <div class="view-tabs">
+      <button class="view-tab-btn active" data-tab="market">
+        <i class="fa-solid fa-magnifying-glass-dollar"></i> Canlı Pazar Listesi
+      </button>
+      <button class="view-tab-btn" data-tab="arbitrage">
+        <i class="fa-solid fa-chart-line"></i> Arbitraj & Kâr Fırsatları
+      </button>
+      <button class="view-tab-btn" data-tab="stalls">
+        <i class="fa-solid fa-shop"></i> Pazar Tezgahları
+      </button>
+    </div>
+
+    <!-- Filtre & Arama Çubuğu (Canlı Pazar Sekmesinde) -->
+    <section class="filter-bar" id="market-filter-bar">
+      <div class="filter-row-top">
+        <div class="search-wrap">
+          <i class="fa-solid fa-search"></i>
+          <input type="text" id="search-input" class="search-input" placeholder="Eşya ara... örn: Shard, Raptor, Chitin, +8, Rol, Silver Gem" autocomplete="off">
+        </div>
+
+        <div class="market-type-toggle">
+          <button class="type-btn active" data-type="">TÜMÜ</button>
+          <button class="type-btn" data-type="SELL">SELL</button>
+          <button class="type-btn" data-type="BUY">BUY</button>
+        </div>
+
+        <select id="channel-select" class="select-dropdown">
+          <option value="">Tüm Kanallar</option>
+          <option value="Moradon 1">Moradon 1</option>
+          <option value="Moradon 2">Moradon 2</option>
+          <option value="El Morad Castle">El Morad Castle</option>
+          <option value="Luferson Castle">Luferson Castle</option>
+        </select>
+
+        <select id="sort-select" class="select-dropdown">
+          <option value="price_asc">Fiyat (En Düşük)</option>
+          <option value="price_desc">Fiyat (En Yüksek)</option>
+          <option value="newest">En Yeni İlanlar</option>
+          <option value="name_asc">Eşya Adı (A-Z)</option>
+        </select>
+      </div>
+
+      <div class="filter-row-bottom">
+        <div class="category-pills">
+          <button class="cat-pill active" data-category="">Tümü</button>
+          <button class="cat-pill" data-category="Dagger">Dagger</button>
+          <button class="cat-pill" data-category="Silah">Silah</button>
+          <button class="cat-pill" data-category="Zırh">Zırh</button>
+          <button class="cat-pill" data-category="Takı">Takı</button>
+          <button class="cat-pill" data-category="Parşömen & PUS">Parşömen & PUS</button>
+          <button class="cat-pill" data-category="Kutu & Gem">Kutu & Gem</button>
+        </div>
+        <div id="results-count">Yükleniyor...</div>
+      </div>
+    </section>
+
+    <!-- 1. GÖRÜNÜM: Canlı Pazar Tablosu -->
+    <div id="view-market" class="tab-view active">
+      <div class="table-wrapper">
+        <table class="market-table">
+          <thead>
+            <tr>
+              <th style="width: 38%;">Eşya Bilgisi</th>
+              <th style="width: 10%;">Tür</th>
+              <th style="width: 22%;">Birim Fiyat</th>
+              <th style="width: 15%;">Satıcı / Tezgah</th>
+              <th style="width: 15%;">Kanal & Zaman</th>
+            </tr>
+          </thead>
+          <tbody id="market-tbody">
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                <i class="fa-solid fa-spinner fa-spin"></i> Pazar verileri yükleniyor...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 2. GÖRÜNÜM: Arbitraj Tablosu -->
+    <div id="view-arbitrage" class="tab-view" style="display: none;">
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 20px; font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 12px;">
+        <i class="fa-solid fa-circle-info" style="color: var(--brand); font-size: 16px;"></i>
+        <span><strong>Arbitraj Nedir?</strong> Bir eşyayı en ucuz satan SELL pazarından alıp, anında en yüksek fiyata alan BUY pazarına sattığınızda elde edeceğiniz brüt kâr fırsatlarını listeler.</span>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="market-table">
+          <thead>
+            <tr>
+              <th style="width: 30%;">Eşya Adı</th>
+              <th style="width: 18%;">En Ucuz SELL (Satış)</th>
+              <th style="width: 18%;">En Yüksek BUY (Alış)</th>
+              <th style="width: 20%;">Kâr Makası (Arbitraj)</th>
+              <th style="width: 14%;">Fırsat</th>
+            </tr>
+          </thead>
+          <tbody id="arbitrage-tbody">
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                <i class="fa-solid fa-spinner fa-spin"></i> Arbitraj fırsatları analiz ediliyor...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 3. GÖRÜNÜM: Tezgahlar (Stalls) -->
+    <div id="view-stalls" class="tab-view" style="display: none;">
+      <div id="stalls-grid" class="stalls-grid">
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
+          <i class="fa-solid fa-spinner fa-spin"></i> Açık tezgahlar yükleniyor...
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Eşya Detay & Fiyat Geçmişi Modalı -->
+  <div id="item-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="item-icon-box" id="modal-icon-box">
+            <img id="modal-item-img" src="/icons/default.svg" alt="icon">
+          </div>
+          <div>
+            <h3 id="modal-item-title" style="font-size: 16px; font-weight: 800; color: #fff;">Eşya Adı</h3>
+            <div id="modal-item-sub" style="font-size: 12px; color: var(--text-muted);">Pazar Özeti</div>
+          </div>
+        </div>
+        <button class="modal-close" id="modal-close-btn">&times;</button>
+      </div>
+
+      <!-- Özet Kartları -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
+        <div style="background: var(--bg-base); border: 1px solid var(--border-subtle); padding: 12px; border-radius: var(--radius-sm);">
+          <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">En Düşük Satış</div>
+          <div id="modal-min-sell" style="font-size: 14px; font-weight: 700; color: var(--sell-color); font-family: var(--font-mono); margin-top: 4px;">-</div>
+        </div>
+        <div style="background: var(--bg-base); border: 1px solid var(--border-subtle); padding: 12px; border-radius: var(--radius-sm);">
+          <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">En Yüksek Alış</div>
+          <div id="modal-max-buy" style="font-size: 14px; font-weight: 700; color: var(--buy-color); font-family: var(--font-mono); margin-top: 4px;">-</div>
+        </div>
+        <div style="background: var(--bg-base); border: 1px solid var(--border-subtle); padding: 12px; border-radius: var(--radius-sm);">
+          <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Aktif Satıcı</div>
+          <div id="modal-seller-count" style="font-size: 14px; font-weight: 700; color: #fff; font-family: var(--font-mono); margin-top: 4px;">-</div>
+        </div>
+      </div>
+
+      <h4 style="font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px;">Aktif Satıcı ve Alıcı Listesi</h4>
+      <div class="table-wrapper" style="max-height: 260px; overflow-y: auto;">
+        <table class="market-table" style="font-size: 12px;">
+          <thead>
+            <tr>
+              <th>Tür</th>
+              <th>Fiyat</th>
+              <th>Satıcı</th>
+              <th>Kanal</th>
+            </tr>
+          </thead>
+          <tbody id="modal-listings-tbody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sayfa Altı -->
+  <footer class="market-footer">
+    <div>
+      <strong>Knight Online Market Sniffer & API</strong> • Açık Kaynak Pazar Analitiği Sistemi
+    </div>
+    <div style="display: flex; gap: 16px;">
+      <a href="/api/feed" target="_blank" style="color: var(--brand);">JSON Feed</a>
+      <a href="/api/arbitrage" target="_blank">Arbitraj API</a>
+      <a href="https://github.com/PeyywadoX/ko-market" target="_blank">GitHub Deposu</a>
+    </div>
+  </footer>
+
+  <script src="/static/js/market.js"></script>
+</body>
+</html>
