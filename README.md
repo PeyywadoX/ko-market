@@ -72,51 +72,64 @@ Ayrıca sunduğu **JSON Feed API** sayesinde pazar verilerini Discord botların�
 
 ---
 
-## 🚀 Hızlı Başlangıç
+## 🚀 Kolay Kurulum & Başlatma
 
-### 1. Gereksinimler
-- **Python 3.10** veya üzeri
-- *(Canlı paket dinleme için opsiyonel)*: [Wireshark](https://www.wireshark.org/) (TShark bileşeni seçili olmalıdır)
+KO Market hem **yazılımcılar** hem de **sıradan oyuncular** düşünülerek tasarlandı. Hiçbir komut satırı deneyiminiz olmasa bile 1 dakikada kurup çalıştırabilirsiniz!
 
-### 2. Kurulum
+### ⚡ Yöntem 1: Windows İçin Tek Tıkla Kurulum (En Kolay Yol)
 
-Depoyu klonlayın ve bağımlılıkları yükleyin:
+1. Projeyi ZIP olarak indirin veya klonlayın:
+   ```bash
+   git clone https://github.com/PeyywadoX/ko-market.git
+   cd ko-market
+   ```
+2. **`kurulum.bat`** (veya `setup.bat`) dosyasına çift tıklayın.  
+   *Sanal ortamı oluşturur, kütüphaneleri yükler ve veritabanını hazırlar.*
+3. **`start_server.bat`** dosyasına çift tıklayarak paneli açın.  
+   Tarayıcınızda otomatik olarak **`http://127.0.0.1:5000`** adresine gidebilirsiniz!
+
+---
+
+### 🎮 Canlı Paket Dinleyici (Sniffer) Kurulumu
+
+> **Önemli:** Sadece pazar verilerini incelemek, web panelini kullanmak veya Discord botuna JSON Feed bağlamak için Wireshark **gerekmez**. Sistem dahili gerçekçi verilerle hemen çalışır.
+
+Eğer **Knight Online oynarken kendi oyununuzdaki pazar paketlerini canlı yakalamak** istiyorsanız:
+
+1. [Wireshark İndir](https://www.wireshark.org/download.html) (Windows Installer 64-bit).
+2. Kurulum ekranında şu kutucukların işaretli olduğundan emin olun:
+   - ✅ **TShark** (Komut satırı motoru)
+   - ✅ **Install Npcap** (Windows paket yakalama sürücüsü)
+3. Npcap kurulurken:
+   - ✅ **"Install Npcap in WinPcap API-compatible Mode"** seçeneğini işaretleyin.
+4. **`start_sniffer.bat`** dosyasını çalıştırın.  
+   Oyunda Moradon pazar bölgesinde gezindikçe veya tezgahları açtıkça tüm eşyalar anında panelinize ve API'nize dökülür!
+
+---
+
+### 💻 Yöntem 2: Manuel Geliştirici Kurulumu
 
 ```bash
+# Depoyu klonlayın
 git clone https://github.com/PeyywadoX/ko-market.git
 cd ko-market
+
+# Sanal ortam oluşturun ve aktif edin
+python -m venv venv
+# Windows:
+venv\Scripts\activate
+# Linux/macOS:
+source venv/bin/activate
+
+# Bağımlılıkları yükleyin
 pip install -r requirements.txt
-```
 
-### 3. Çalıştırma
-
-Projeyi çalıştırmak için 2 yöntem bulunur:
-
-#### Yöntem A: Sadece Web Sunucusu & Veri İnceleme
-> *Not: Veritabanında veri yoksa sistem otomatik olarak örnek pazar verileriyle (Seed Data) başlar. Oyuna bağlı olmadan hemen arayüzü ve API'yi test edebilirsiniz.*
-
-```bash
+# Web sunucusunu başlatın
 python app.py
-```
-veya Windows üzerinde:
-```bat
-start_server.bat
-```
-Tarayıcınızdan **`http://127.0.0.1:5000`** adresine gidin.
 
-#### Yöntem B: Canlı Paket Dinleyici (Sniffer) ile Birlikte
-Knight Online çalışırken Moradon pazarındaki verileri canlı yakalamak için:
-
-1. **Ağ Dinleyiciyi Başlatın:**
-   ```bash
-   python market_sniffer.py
-   ```
-   *(veya `start_sniffer.bat`)*
-2. **Web Sunucusunu Başlatın:**
-   ```bash
-   python app.py
-   ```
-Oyunda pazar bölgesinde gezindikçe veya Menissiah / Merchant listelerini açtıkça veriler anında veritabanına ve web paneline yansır.
+# (İsteğe bağlı) Paket dinleyiciyi başlatın
+python market_sniffer.py
+```
 
 ---
 

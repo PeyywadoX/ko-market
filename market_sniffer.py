@@ -215,20 +215,62 @@ def find_tshark():
             continue
     return None
 
-def start_sniffer(interface="1", port=15001):
-    """TShark sürecini başlatarak canlı pazar paketlerini dinler."""
+def check_sniffer_prerequisites():
+    """TShark ve Npcap varlığını kontrol eder, eksikse rehber sunar."""
     tshark_bin = find_tshark()
     if not tshark_bin:
-        print(f"{C_RED}[HATA] TShark (Wireshark) bulunamadı! Lütfen Wireshark kurun.{C_RESET}")
+        print(f"\n{C_RED}{'='*64}{C_RESET}")
+        print(f"{C_BOLD}{C_WHITE} [!] TShark (Wireshark) Bulunamadı!{C_RESET}")
+        print(f"{C_RED}{'='*64}{C_RESET}")
+        print("Canlı Knight Online pazar paketlerini dinlemek için Wireshark gereklidir.")
+        print("\nNasıl Kurulur? (1 Dakika):")
+        print("1. https://www.wireshark.org/download.html adresinden Wireshark'ı indirin.")
+        print("2. Kurulum ekranında şu kutucukların işaretli olduğundan emin olun:")
+        print("   [x] TShark (Command Line Tool)")
+        print("   [x] Install Npcap (Paket Yakalama Sürücüsü)")
+        print("3. Kurulum tamamlandıktan sonra 'start_sniffer.bat'ı tekrar başlatın.")
+        print(f"{C_RED}{'='*64}{C_RESET}\n")
+        return None
+
+    # Npcap kontrolü
+    try:
+        check = subprocess.run([tshark_bin, "-D"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if "Unable to load Npcap" in (check.stderr or "") or check.returncode != 0:
+            print(f"\n{C_YELLOW}{'='*64}{C_RESET}")
+            print(f"{C_BOLD}{C_YELLOW} [!] Npcap Paket Sürücüsü Eksik!{C_RESET}")
+            print(f"{C_YELLOW}{'='*64}{C_RESET}")
+            print("TShark sisteminizde kurulu fakat Windows ağ paketlerini okumak için Npcap gereklidir.")
+            print("\nNasıl Çözülür? (1 Dakika):")
+            print("1. https://npcap.com/ adresine gidin ve 'Npcap Installer'ı indirin.")
+            print("2. Kurulumda 'Install Npcap in WinPcap API-compatible Mode' kutucuğunu işaretleyin.")
+            print("3. Kurulum bitince bu programı tekrar çalıştırın!")
+            print(f"{C_YELLOW}{'='*64}{C_RESET}\n")
+            return None
+    except Exception:
+        pass
+
+    return tshark_bin
+
+def start_sniffer(interface=None, port=15001):
+    """TShark sürecini başlatarak canlı pazar paketlerini dinler."""
+    tshark_bin = check_sniffer_prerequisites()
+    if not tshark_bin:
         return
+
+    # Arayüz tespiti
+    if not interface:
+        interface = os.environ.get("KO_MARKET_INTERFACE", "1")
+        if len(sys.argv) > 1 and sys.argv[1].isdigit():
+            interface = sys.argv[1]
 
     market_db.init_db()
     print(f"{C_GOLD}===================================================={C_RESET}")
-    print(f"{C_BOLD}{C_WHITE}   PeyywadoX — Knight Online Pazar Dinleyicisi{C_RESET}")
+    print(f"{C_BOLD}{C_WHITE}   PeyywadoX — Knight Online Canlı Pazar Dinleyicisi{C_RESET}")
     print(f"{C_GOLD}===================================================={C_RESET}")
     print(f"[*] Dinlenen Portlar: 15001-15200 (TCP)")
-    print(f"[*] Arayüz: {interface} | TShark: {tshark_bin}")
-    print(f"[*] Pazar verileri toplanıyor... (Çıkmak için Ctrl+C)\n")
+    print(f"[*] Ağ Arayüzü: #{interface} | TShark: {tshark_bin}")
+    print(f"[*] USKO Menissiah & Pazar paketleri dinleniyor...")
+    print(f"[*] Çıkmak için Ctrl+C tuşlarına basabilirsiniz.\n")
 
     cmd = [
         tshark_bin,
