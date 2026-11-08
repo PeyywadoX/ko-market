@@ -122,8 +122,39 @@ def _db_worker():
         if batch and (len(batch) >= 100 or now - last_commit >= 1.0):
             try:
                 c = conn.cursor()
-                for sql, params in batch:
-                    c.execute(sql, params)
+                for task in batch:
+                    if isinstance(task, tuple) and len(task) == 2:
+                        op, args = task
+                        if op == "REPLACE_CATALOG":
+                            channel_name, items = args
+                            now_s = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                            c.execute("DELETE FROM market_items WHERE server_channel = ?", (channel_name,))
+                            for _it in items:
+                                c.execute("""
+                                INSERT INTO market_items (
+                                    merchant_id, merchant_name, merchant_title, market_type, slot,
+                                    item_id, item_name, count, price, durability, server_channel,
+                                    location_name, merchant_x, merchant_z, timestamp
+                                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                """, (
+                                    int(_it.get("merchant_id") or 0),
+                                    str(_it.get("merchant_name") or ""),
+                                    str(_it.get("merchant_title") or ""),
+                                    str(_it.get("market_type") or "SELL"),
+                                    int(_it.get("slot") or 0),
+                                    int(_it.get("item_id") or 0),
+                                    str(_it.get("item_name") or ""),
+                                    int(_it.get("count") or 1),
+                                    int(_it.get("price") or 0),
+                                    int(_it.get("durability") or 0),
+                                    str(_it.get("server_channel") or channel_name),
+                                    str(_it.get("location_name") or "Moradon"),
+                                    float(_it.get("merchant_x") or 0.0),
+                                    float(_it.get("merchant_z") or 0.0),
+                                    now_s
+                                ))
+                        elif isinstance(op, str) and ("INSERT" in op or "UPDATE" in op or "DELETE" in op):
+                            c.execute(op, args)
                 conn.commit()
             except Exception as e:
                 conn.rollback()
@@ -144,6 +175,38 @@ def queue_execute(sql, params=()):
     """Sorguyu arka planda asenkron çalıştırılmak üzere sıraya koyar."""
     start_db_worker()
     _write_queue.put((sql, params))
+
+def replace_market_catalog(channel_name: str, items: list):
+    """O kanaldaki eski Menissiah pazar verilerini temizleyip taze kataloğu yazar."""
+    start_db_worker()
+    _write_queue.put(("REPLACE_CATALOG", (channel_name, items)))
+
+def insert_market_item(it: dict):
+    """Tekil bir pazar eşyasını sıraya ekler."""
+    sql = """
+    INSERT INTO market_items (
+        merchant_id, merchant_name, merchant_title, market_type, slot,
+        item_id, item_name, count, price, durability, server_channel,
+        location_name, merchant_x, merchant_z, timestamp
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+    """
+    params = (
+        int(it.get("merchant_id") or 0),
+        str(it.get("merchant_name") or ""),
+        str(it.get("merchant_title") or ""),
+        str(it.get("market_type") or "SELL"),
+        int(it.get("slot") or 0),
+        int(it.get("item_id") or 0),
+        str(it.get("item_name") or ""),
+        int(it.get("count") or 1),
+        int(it.get("price") or 0),
+        int(it.get("durability") or 0),
+        str(it.get("server_channel") or "Zero 1"),
+        str(it.get("location_name") or "Moradon"),
+        float(it.get("merchant_x") or 0.0),
+        float(it.get("merchant_z") or 0.0),
+    )
+    queue_execute(sql, params)
 
 # --- SORGULAR & PAZAR YAYINLAMA FONKSİYONLARI ---
 
